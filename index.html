@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI HelpBot</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Floating Chat Icon -->
+    <div id="chat-icon" onclick="toggleChat()">
+        💬
+    </div>
+
+    <!-- Chatbot Container -->
+    <div id="chat-container" class="hidden">
+        <div id="chat-header">
+            <span>AI HelpBot</span>
+            <button onclick="toggleChat()">✖</button>
+        </div>
+        <div id="chat-body"></div>
+        <div id="chat-footer">
+            <input type="text" id="user-input" placeholder="Type your message..." onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="lang-detect.js"></script>
+</body>
+</html>
