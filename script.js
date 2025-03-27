@@ -10,7 +10,7 @@ function handleKeyPress(event) {
         sendMessage();
     }
 }
-
+let apiURL = "https://yourhost.com/chatbot.php";
 // Send user message
 async function sendMessage() {
     let inputField = document.getElementById("user-input");
