@@ -10,19 +10,25 @@ document.addEventListener("DOMContentLoaded", function () {
         chatContainer.style.display = chatContainer.style.display === "none" ? "flex" : "none";
     });
 
-    // Handle sending messages
+    // Send message on button click
     sendButton.addEventListener("click", sendMessage);
-    userInput.addEventListener("keypress", function (e) {
-        if (e.key === "Enter") sendMessage();
+
+    // Send message on Enter key press
+    userInput.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+            event.preventDefault(); // Prevent new line
+            sendMessage();
+        }
     });
 
     function sendMessage() {
         const message = userInput.value.trim();
-        if (message === "") return;
+
+        if (message === "") return; // Prevent empty messages
 
         // Display user message
         appendMessage("user", message);
-        userInput.value = "";
+        userInput.value = ""; // Clear input
 
         // Show bot thinking animation
         showBotThinking();
@@ -46,7 +52,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function fetchChatGPTResponse(userMessage) {
-        const apiKey = "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"; // Replace with your OpenAI API Key
+        const apiKey = "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"; // Replace with your actual OpenAI API Key
         const apiUrl = "https://api.openai.com/v1/chat/completions";
 
         fetch(apiUrl, {
