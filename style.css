@@ -19,14 +19,10 @@
     right: 20px;
     width: 320px;
     background: white;
-    border-radius: 10px;
+    border-radius: 20px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     display: none;
     flex-direction: column;
-}
-
-.hidden {
-    display: none;
 }
 
 /* Chat Header */
@@ -38,7 +34,6 @@
     display: flex;
     justify-content: space-between;
 }
-
 /* Chat Body */
 #chat-body {
     height: 300px;
@@ -55,7 +50,6 @@
         border-bottom-left-radius: 20px;
     background: #f1f1f1;
 }
-
 #user-input {
     flex: 1;
     padding: 8px;
@@ -89,4 +83,48 @@ button {
     border-radius: 10px;
     margin: 5px;
     max-width: 80%;
+}
+
+/* Bot Thinking Animation */
+#bot-thinking {
+    align-self: flex-start;
+    background: #f1f1f1;
+    padding: 8px;
+    border-radius: 10px;
+    margin: 5px;
+    max-width: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Dots Animation */
+.typing-dots {
+    display: flex;
+    gap: 3px;
+}
+
+.typing-dots span {
+    width: 6px;
+    height: 6px;
+    background: gray;
+    border-radius: 50%;
+    animation: typing 1.5s infinite ease-in-out;
+}
+
+.typing-dots span:nth-child(1) {
+    animation-delay: 0s;
+}
+.typing-dots span:nth-child(2) {
+    animation-delay: 0.3s;
+}
+.typing-dots span:nth-child(3) {
+    animation-delay: 0.6s;
+}
+
+/* Typing Animation Keyframes */
+@keyframes typing {
+    0% { opacity: 0.2; }
+    50% { opacity: 1; }
+    100% { opacity: 0.2; }
 }
