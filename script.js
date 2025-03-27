@@ -1,92 +1,83 @@
-document.addEventListener("DOMContentLoaded", function () {
-    const chatIcon = document.getElementById("chat-icon");
-    const chatContainer = document.getElementById("chat-container");
-    const chatBody = document.getElementById("chat-body");
-    const userInput = document.getElementById("user-input");
-    const sendButton = document.getElementById("send-btn");
+// Toggle chatbox visibility
+function toggleChat() {
+    let chatContainer = document.getElementById("chat-container");
+    chatContainer.style.display = chatContainer.style.display === "none" || chatContainer.style.display === "" ? "block" : "none";
+}
 
-    // Toggle chatbot visibility
-    chatIcon.addEventListener("click", function () {
-        chatContainer.style.display = chatContainer.style.display === "none" ? "flex" : "none";
+// Send message when pressing Enter
+function handleKeyPress(event) {
+    if (event.key === "Enter") {
+        sendMessage();
+    }
+}
+
+// Send user message
+async function sendMessage() {
+    let inputField = document.getElementById("user-input");
+    let userMessage = inputField.value.trim();
+    if (userMessage === "") return;
+
+    let chatBody = document.getElementById("chat-body");
+
+    // Add user message
+    let userMsgElement = document.createElement("div");
+    userMsgElement.classList.add("user-message");
+    userMsgElement.textContent = userMessage;
+    chatBody.appendChild(userMsgElement);
+
+    inputField.value = "";
+
+    let userLang = await detectLanguage(userMessage);
+
+    let response = await fetch("chatbot.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: userMessage, lang: userLang })
     });
 
-    // Send message on button click
-    sendButton.addEventListener("click", sendMessage);
+    let data = await response.json();
 
-    // Send message on Enter key press
-    userInput.addEventListener("keypress", function (event) {
-        if (event.key === "Enter") {
-            event.preventDefault(); // Prevent new line
-            sendMessage();
-        }
-    });
+    // Add bot response
+    let botMsgElement = document.createElement("div");
+    botMsgElement.classList.add("bot-message");
+    botMsgElement.textContent = data.reply;
+    chatBody.appendChild(botMsgElement);
 
-    function sendMessage() {
-        const message = userInput.value.trim();
+    chatBody.scrollTop = chatBody.scrollHeight;
+}
+document.getElementById("send-btn").addEventListener("click", function () {
+    let userInput = document.getElementById("user-input").value;
+    if (!userInput.trim()) return;
 
-        if (message === "") return; // Prevent empty messages
+    let chatBody = document.getElementById("chat-body");
 
-        // Display user message
-        appendMessage("user", message);
-        userInput.value = ""; // Clear input
+    // Add user's message
+    let userMessage = document.createElement("div");
+    userMessage.classList.add("user-message");
+    userMessage.textContent = userInput;
+    chatBody.appendChild(userMessage);
 
-        // Show bot thinking animation
-        showBotThinking();
+    // Clear input
+    document.getElementById("user-input").value = "";
 
-        // Simulate API call delay
-        setTimeout(() => {
-            fetchChatGPTResponse(message);
-        }, 2000); // Simulating 2-second delay for API response
-    }
+    // Show bot "thinking" animation
+    let typingIndicator = document.createElement("div");
+    typingIndicator.classList.add("typing");
+    typingIndicator.innerHTML = "<span></span><span></span><span></span>";
+    chatBody.appendChild(typingIndicator);
 
-    function showBotThinking() {
-        const botThinking = document.createElement("div");
-        botThinking.id = "bot-thinking";
-        botThinking.classList.add("bot-message");
-        botThinking.innerHTML = `<div class="typing-dots">
-            <span></span><span></span><span></span>
-        </div>`;
+    chatBody.scrollTop = chatBody.scrollHeight;
 
-        chatBody.appendChild(botThinking);
+    // Simulate API request delay (replace with real API call)
+    setTimeout(() => {
+        chatBody.removeChild(typingIndicator); // Remove typing animation
+
+        // Fake bot response (replace with OpenAI API response)
+        let botMessage = document.createElement("div");
+        botMessage.classList.add("bot-message");
+        botMessage.textContent = "🤖 Thinking... (Replace this with OpenAI API response)";
+        chatBody.appendChild(botMessage);
+
         chatBody.scrollTop = chatBody.scrollHeight;
-    }
-
-    function fetchChatGPTResponse(userMessage) {
-        const apiKey = "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"; // Replace with your actual OpenAI API Key
-        const apiUrl = "https://api.openai.com/v1/chat/completions";
-
-        fetch(apiUrl, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${apiKey}`,
-            },
-            body: JSON.stringify({
-                model: "gpt-4",
-                messages: [{ role: "user", content: userMessage }],
-            }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            // Remove bot thinking animation
-            document.getElementById("bot-thinking").remove();
-
-            // Get bot response
-            const botReply = data.choices[0].message.content;
-            appendMessage("bot", botReply);
-        })
-        .catch(error => {
-            console.error("Error fetching ChatGPT response:", error);
-            document.getElementById("bot-thinking").remove();
-            appendMessage("bot", "Oops! Something went wrong. Please try again.");
-        });
-    }
-
-    function appendMessage(sender, text) {
-        const messageDiv = document.createElement("div");
-        messageDiv.classList.add(sender === "user" ? "user-message" : "bot-message");
-        messageDiv.innerText = text;
-        chatBody.appendChild(messageDiv);
-        chatBody.scrollTop = chatBody.scrollHeight;
-    }
+    }, 2000); // Simulating a delay of 2 seconds
 });
